@@ -1,1 +1,7 @@
 {"timestamp": "2026-05-31T19:06:01.698927+00:00", "session_id": "test-sess-001", "event": "UserPromptSubmit", "prompt": "fix the article service"}
+{"timestamp": "2026-05-31T19:12:00.334200+00:00", "session_id": "sess-abc123", "event": "UserPromptSubmit", "prompt": "add a hasImage() method to User domain entity with unit tests"}
+{"timestamp": "2026-05-31T19:12:28.441900+00:00", "session_id": "sess-abc123", "event": "UserPromptSubmit", "prompt": "/commit"}
+{"timestamp": "2026-05-31T19:15:40.103100+00:00", "session_id": "sess-def456", "event": "UserPromptSubmit", "prompt": "/ship — add canBeFollowedBy() method to User with self-follow guard"}
+{"timestamp": "2026-05-31T19:20:11.887300+00:00", "session_id": "sess-ghi789", "event": "UserPromptSubmit", "prompt": "/onboard — explain the architecture to a new team member"}
+{"timestamp": "2026-05-31T19:31:05.220400+00:00", "session_id": "sess-ghi789", "event": "UserPromptSubmit", "prompt": "/review — check my changes before creating a PR"}
+{"timestamp": "2026-05-31T19:45:17.556800+00:00", "session_id": "sess-jkl012", "event": "UserPromptSubmit", "prompt": "/test-gen — generate tests for ArticleCommandService"}

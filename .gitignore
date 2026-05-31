@@ -24,3 +24,9 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### OS ###
+.DS_Store
+
+### Compiled classes (bin/) ###
+bin/

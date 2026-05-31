@@ -33,6 +33,7 @@
       "Edit(README.md)",
       "Edit(REPORT.md)"
     ],
+    "defaultMode": "default",
     "deny": [
       "Bash(rm *)",
       "Bash(curl * | *sh*)",
