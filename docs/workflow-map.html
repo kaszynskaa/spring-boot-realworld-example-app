@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workflow Map — Development Lifecycle</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      padding: 2rem;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.25rem; color: #2d3a8c; }
+    .subtitle { color: #666; font-size: 0.95rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.2rem; color: #2d3a8c; margin: 2rem 0 1rem; border-bottom: 2px solid #e0e4f0; padding-bottom: 0.4rem; }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+    }
+    .mermaid { display: flex; justify-content: center; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    thead tr { background: #2d3a8c; color: #fff; }
+    th, td { padding: 0.6rem 0.9rem; text-align: left; border-bottom: 1px solid #e8ecf5; }
+    tbody tr:hover { background: #f0f4ff; }
+    td strong { color: #2d3a8c; }
+    .pain { color: #c0392b; font-size: 0.85rem; }
+    .tool-tag {
+      display: inline-block;
+      background: #e8ecf5;
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.8rem;
+      margin: 1px;
+      color: #3a4080;
+    }
+    .total {
+      background: #eef2ff;
+      border-left: 4px solid #2d3a8c;
+      padding: 0.75rem 1rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Workflow Map</h1>
+  <p class="subtitle">Development lifecycle — ticket pickup to production deploy</p>
+
+  <div class="card">
+    <h2>Flowchart</h2>
+    <div class="mermaid">
+flowchart TD
+    A([🎫 Ticket Pickup]) --> B[Understand Requirements]
+    B --> C[Explore Codebase]
+    C --> D[Plan Implementation]
+    D --> E[Write Code]
+    E --> F[Write / Run Tests]
+    F --> G{Tests Pass?}
+    G -- No --> E
+    G -- Yes --> H[Local QA & Manual Testing]
+    H --> I[Code Review Prep\nWrite PR description]
+    I --> J[Open Pull Request]
+    J --> K[Await Review]
+    K --> L{Review Outcome}
+    L -- Changes Requested --> M[Address Feedback]
+    M --> J
+    L -- Approved --> N[Merge to Main]
+    N --> O[CI/CD Pipeline]
+    O --> P{Pipeline OK?}
+    P -- No --> Q[Fix Pipeline Issues]
+    Q --> O
+    P -- Yes --> R([🚀 Deploy to Production])
+
+    style A fill:#e8f5e9,stroke:#388e3c
+    style R fill:#e8f5e9,stroke:#388e3c
+    style G fill:#fff8e1,stroke:#f9a825
+    style L fill:#fff8e1,stroke:#f9a825
+    style P fill:#fff8e1,stroke:#f9a825
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Step Annotations</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>Time (min)</th>
+          <th>Tools</th>
+          <th>Pain Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Ticket Pickup</strong></td>
+          <td>10</td>
+          <td><span class="tool-tag">Jira</span><span class="tool-tag">GitHub Issues</span></td>
+          <td class="pain">Vague acceptance criteria, missing context</td>
+        </tr>
+        <tr>
+          <td><strong>Understand Requirements</strong></td>
+          <td>30</td>
+          <td><span class="tool-tag">Confluence</span><span class="tool-tag">Slack</span></td>
+          <td class="pain">Context scattered across tools, async delays</td>
+        </tr>
+        <tr>
+          <td><strong>Explore Codebase</strong></td>
+          <td>45</td>
+          <td><span class="tool-tag">IDE</span><span class="tool-tag">grep</span><span class="tool-tag">git log</span></td>
+          <td class="pain">No clear entry points, large unfamiliar codebase</td>
+        </tr>
+        <tr>
+          <td><strong>Plan Implementation</strong></td>
+          <td>20</td>
+          <td><span class="tool-tag">Notes</span><span class="tool-tag">Whiteboard</span></td>
+          <td class="pain">Hard to validate approach before writing code</td>
+        </tr>
+        <tr>
+          <td><strong>Write Code</strong></td>
+          <td>90</td>
+          <td><span class="tool-tag">IDE</span><span class="tool-tag">StackOverflow</span><span class="tool-tag">Docs</span></td>
+          <td class="pain">Boilerplate, API lookups, context switching</td>
+        </tr>
+        <tr>
+          <td><strong>Write / Run Tests</strong></td>
+          <td>40</td>
+          <td><span class="tool-tag">JUnit</span><span class="tool-tag">Gradle</span></td>
+          <td class="pain">Repetitive test scaffolding, flaky tests</td>
+        </tr>
+        <tr>
+          <td><strong>Local QA</strong></td>
+          <td>20</td>
+          <td><span class="tool-tag">Browser</span><span class="tool-tag">Postman</span></td>
+          <td class="pain">Manual, error-prone, easy to miss edge cases</td>
+        </tr>
+        <tr>
+          <td><strong>PR Description</strong></td>
+          <td>15</td>
+          <td><span class="tool-tag">GitHub</span></td>
+          <td class="pain">Blank page problem, summarising changes is tedious</td>
+        </tr>
+        <tr>
+          <td><strong>Await Review</strong></td>
+          <td>120</td>
+          <td><span class="tool-tag">GitHub</span><span class="tool-tag">Slack</span></td>
+          <td class="pain">Blocked waiting, unpredictable turnaround</td>
+        </tr>
+        <tr>
+          <td><strong>Address Feedback</strong></td>
+          <td>30</td>
+          <td><span class="tool-tag">IDE</span><span class="tool-tag">GitHub</span></td>
+          <td class="pain">Interpreting vague review comments</td>
+        </tr>
+        <tr>
+          <td><strong>Fix Pipeline</strong></td>
+          <td>20</td>
+          <td><span class="tool-tag">GitHub Actions</span></td>
+          <td class="pain">Cryptic CI errors, environment-specific failures</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="total">Total cycle time (single pass, no rework): <strong>440 min (~7.3 hours)</strong></div>
+  </div>
+
+  <script>mermaid.initialize({ startOnLoad: true, theme: "default" });</script>
+</body>
+</html>

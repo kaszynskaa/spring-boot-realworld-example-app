@@ -1,0 +1,111 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew *)",
+      "Bash(JAVA_HOME=* ./gradlew *)",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git add *)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(gh pr *)",
+      "Bash(curl -s http://localhost:*)",
+      "Bash(find src *)",
+      "Bash(find .claude *)",
+      "Bash(grep -r * src/)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(mkdir -p .claude/audit)",
+      "Read(*)",
+      "Write(src/*)",
+      "Write(.claude/*)",
+      "Write(docs/*)",
+      "Write(CLAUDE.md)",
+      "Write(README.md)",
+      "Write(REPORT.md)",
+      "Write(workflow-analysis.md)",
+      "Edit(src/*)",
+      "Edit(.claude/*)",
+      "Edit(docs/*)",
+      "Edit(CLAUDE.md)",
+      "Edit(README.md)",
+      "Edit(REPORT.md)"
+    ],
+    "deny": [
+      "Bash(rm *)",
+      "Bash(curl * | *sh*)",
+      "Bash(wget * | *sh*)",
+      "Bash(chmod 777 *)",
+      "Bash(sudo *)",
+      "Bash(git push --force*)",
+      "Bash(git push *-f *)",
+      "Bash(git reset --hard*)",
+      "Write(/etc/*)",
+      "Write(/usr/*)",
+      "Write(/System/*)",
+      "Write(~/.ssh/*)",
+      "Write(~/.aws/*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/validate-bash.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/check-secrets.py"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/scope-guard.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "AUDIT_FILE=.claude/audit/audit.jsonl bash .claude/hooks/audit-log.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/log-prompts.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/session-summary.py"
+          }
+        ]
+      }
+    ]
+  }
+}

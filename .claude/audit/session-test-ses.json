@@ -1,0 +1,16 @@
+{
+  "session_id": "test-sess-001",
+  "generated_at": "2026-05-31T19:06:11.616624+00:00",
+  "summary": {
+    "session_start": "2026-05-31T19:06:11.591443+00:00",
+    "session_end": "2026-05-31T19:06:11.591443+00:00",
+    "total_actions": 1,
+    "total_prompts": 1,
+    "tool_usage": {
+      "Write": 1
+    }
+  },
+  "prompts": [
+    "fix the article service"
+  ]
+}

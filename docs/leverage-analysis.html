@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automation Leverage Analysis</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      padding: 2rem;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.25rem; color: #2d3a8c; }
+    .subtitle { color: #666; font-size: 0.95rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.2rem; color: #2d3a8c; margin: 2rem 0 1rem; border-bottom: 2px solid #e0e4f0; padding-bottom: 0.4rem; }
+    h3 { font-size: 1rem; color: #1a1a2e; margin-bottom: 0.5rem; }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    thead tr { background: #2d3a8c; color: #fff; }
+    th, td { padding: 0.65rem 0.9rem; text-align: left; border-bottom: 1px solid #e8ecf5; }
+    tbody tr:hover { background: #f0f4ff; }
+
+    .roi-bar-cell { width: 180px; }
+    .roi-bar-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    .roi-bar { height: 10px; border-radius: 5px; background: #2d3a8c; }
+    .roi-num { font-weight: 700; font-size: 0.95rem; min-width: 1.4rem; }
+
+    .cap { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 12px; font-size: 0.78rem; font-weight: 600; }
+    .cap-very-high { background: #e8f5e9; color: #2e7d32; }
+    .cap-high      { background: #e3f2fd; color: #1565c0; }
+    .cap-medium    { background: #fff8e1; color: #f57f17; }
+    .cap-low       { background: #fce4ec; color: #c62828; }
+
+    .freq { font-size: 0.82rem; color: #555; }
+
+    .top3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+    .target-card {
+      border-radius: 8px;
+      padding: 1.25rem;
+      border-left: 5px solid;
+    }
+    .target-card:nth-child(1) { border-color: #f9a825; background: #fffde7; }
+    .target-card:nth-child(2) { border-color: #1565c0; background: #e3f2fd; }
+    .target-card:nth-child(3) { border-color: #2e7d32; background: #e8f5e9; }
+    .target-card .rank { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .target-card .name { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .target-card .roi-badge {
+      display: inline-block;
+      background: #2d3a8c;
+      color: #fff;
+      border-radius: 4px;
+      padding: 0.1rem 0.5rem;
+      font-size: 0.8rem;
+      margin-bottom: 0.75rem;
+    }
+    .target-card p { font-size: 0.88rem; line-height: 1.5; color: #333; margin-bottom: 0.5rem; }
+    .target-card .cmd {
+      font-family: monospace;
+      background: rgba(0,0,0,0.07);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+    }
+
+    .legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.82rem; }
+    .legend-item { display: flex; align-items: center; gap: 0.35rem; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  </style>
+</head>
+<body>
+  <h1>Automation Leverage Analysis</h1>
+  <p class="subtitle">Scoring framework for prioritising AI-assisted workflow automation</p>
+
+  <div class="card">
+    <h2>All Steps Scored</h2>
+    <div class="legend">
+      <span class="legend-item"><span class="cap cap-very-high">Very High</span> AI handles it end-to-end</span>
+      <span class="legend-item"><span class="cap cap-high">High</span> AI accelerates significantly</span>
+      <span class="legend-item"><span class="cap cap-medium">Medium</span> AI assists partially</span>
+      <span class="legend-item"><span class="cap cap-low">Low</span> Requires human judgement</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>Frequency</th>
+          <th>Time/occurrence</th>
+          <th>AI Capability</th>
+          <th class="roi-bar-cell">ROI Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Explore Codebase</strong></td>
+          <td><span class="freq">Daily</span></td>
+          <td>45 min</td>
+          <td><span class="cap cap-very-high">Very High</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:90%"></div><span class="roi-num">9</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>Write Code</strong></td>
+          <td><span class="freq">Daily</span></td>
+          <td>90 min</td>
+          <td><span class="cap cap-very-high">Very High</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:90%"></div><span class="roi-num">9</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>Write Tests</strong></td>
+          <td><span class="freq">Daily</span></td>
+          <td>40 min</td>
+          <td><span class="cap cap-very-high">Very High</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:90%"></div><span class="roi-num">9</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>PR Description</strong></td>
+          <td><span class="freq">Daily</span></td>
+          <td>15 min</td>
+          <td><span class="cap cap-very-high">Very High</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:90%"></div><span class="roi-num">9</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>Understand Requirements</strong></td>
+          <td><span class="freq">Daily</span></td>
+          <td>30 min</td>
+          <td><span class="cap cap-high">High</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:80%"></div><span class="roi-num">8</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>Plan Implementation</strong></td>
+          <td><span class="freq">Daily</span></td>
+          <td>20 min</td>
+          <td><span class="cap cap-high">High</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:80%"></div><span class="roi-num">8</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>Address Feedback</strong></td>
+          <td><span class="freq">Weekly</span></td>
+          <td>30 min</td>
+          <td><span class="cap cap-high">High</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:70%"></div><span class="roi-num">7</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>Local QA</strong></td>
+          <td><span class="freq">Daily</span></td>
+          <td>20 min</td>
+          <td><span class="cap cap-medium">Medium</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:60%"></div><span class="roi-num">6</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>Fix Pipeline</strong></td>
+          <td><span class="freq">Weekly</span></td>
+          <td>20 min</td>
+          <td><span class="cap cap-medium">Medium</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:60%"></div><span class="roi-num">6</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>Ticket Pickup</strong></td>
+          <td><span class="freq">Daily</span></td>
+          <td>10 min</td>
+          <td><span class="cap cap-medium">Medium</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:50%"></div><span class="roi-num">5</span></div></td>
+        </tr>
+        <tr>
+          <td><strong>Await Review</strong></td>
+          <td><span class="freq">Daily</span></td>
+          <td>120 min</td>
+          <td><span class="cap cap-low">Low</span></td>
+          <td class="roi-bar-cell"><div class="roi-bar-wrap"><div class="roi-bar" style="width:20%"></div><span class="roi-num">2</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Top 3 Automation Targets</h2>
+    <div class="top3">
+      <div class="target-card">
+        <div class="rank">🥇</div>
+        <div class="name">Explore Codebase</div>
+        <div class="roi-badge">ROI 9 · Daily · 45 min</div>
+        <p>Highest single time sink per ticket. Claude Code's semantic search and architecture explanation turns a 45-minute treasure hunt into a 5-minute conversation. Highest raw minutes recoverable per day.</p>
+        <span class="cmd">/onboard · natural codebase exploration</span>
+      </div>
+      <div class="target-card">
+        <div class="rank">🥈</div>
+        <div class="name">Write Tests</div>
+        <div class="roi-badge">ROI 9 · Daily · 40 min</div>
+        <p>Test scaffolding is almost deterministic given a method's signature. AI capability is very high — repetitive patterns, no creativity required. Output is immediately runnable.</p>
+        <span class="cmd">/test-gen</span>
+      </div>
+      <div class="target-card">
+        <div class="rank">🥉</div>
+        <div class="name">PR Description</div>
+        <div class="roi-badge">ROI 9 · Daily · 15 min</div>
+        <p>Near-zero human value in the writing itself. 15 min manually → 30 seconds automated. Across a 10-person team: ~25 hours/week saved. The value is in <em>having</em> the description, not writing it.</p>
+        <span class="cmd">/ship → Stage 4</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
