@@ -30,6 +30,10 @@ public class User {
     return image != null && !image.isBlank();
   }
 
+  public boolean canBeFollowedBy(String userId) {
+    return userId != null && !userId.equals(this.id);
+  }
+
   public void update(String email, String username, String password, String bio, String image) {
     if (!Util.isEmpty(email)) {
       this.email = email;
