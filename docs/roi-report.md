@@ -24,7 +24,7 @@ flowchart TD
         A9 --> A10[Open PR manually]
     end
 
-    subgraph AFTER ["After - AI Pipeline 6 min"]
+    subgraph AFTER ["After - AI Pipeline 5 min"]
         B1[Write code] --> B2[git add]
         B2 --> B3[ship pipeline]
         B3 --> B4[review auto]

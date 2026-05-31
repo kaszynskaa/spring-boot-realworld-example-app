@@ -346,7 +346,17 @@ jq -r '.tool_name' .claude/audit/audit.jsonl | sort | uniq -c | sort -rn
 | Backend verification (curl) | 3 | Hit `/api/users` (wrong path) → 401 | 1 | Correct endpoint, 403 confirmed |
 | **Total** | **37 min** | **5 errors** | **6 min** | **0 errors** |
 
-**Speedup: 6.2× (task) / 6.8× (core development steps only)**
+**Speedup: 6.2× (full task) / 6.8× (core development steps only)**
+
+**Output quality comparison:**
+
+| Dimension | Manual (Task A) | Pipeline (Task B) |
+|---|---|---|
+| Commit message | `feat(core): add isActive() to User` — no body | `feat(core): add User.canBeFollowedBy() with self-follow guard` + body explaining null-safety and test coverage |
+| Test generation | 3 tests written manually, wrong assertion first attempt | 3 tests auto-generated, all correct first attempt |
+| Missing test detected | Not flagged before commit | Caught by `/review` before commit → `/test-gen` ran immediately |
+| PR description | Not written | Full template: summary + test plan + review checklist |
+| Bug discovered | None caught | Self-follow bug found and fixed (HTTP 403) |
 
 **Backend verification results:**
 
