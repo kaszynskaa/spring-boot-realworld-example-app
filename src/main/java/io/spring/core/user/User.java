@@ -26,6 +26,10 @@ public class User {
     this.image = image;
   }
 
+  public boolean hasImage() {
+    return image != null && !image.isBlank();
+  }
+
   public void update(String email, String username, String password, String bio, String image) {
     if (!Util.isEmpty(email)) {
       this.email = email;

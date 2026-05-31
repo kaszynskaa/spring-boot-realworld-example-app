@@ -12,7 +12,13 @@ Steps:
    d. If it exists, add missing test cases. If not, create a new test class.
    e. Cover at minimum: one happy-path test and one error/edge-case test per public method.
 3. Write all generated/updated test files.
-4. Run the tests: `JAVA_HOME=/Library/Java/JavaVirtualMachines/microsoft-11.jdk/Contents/Home ./gradlew test --tests "*" 2>&1 | tail -30`
+4. Detect the Java 11 home and run tests:
+
+   ```bash
+   JAVA11=$(/usr/libexec/java_home -v 11 2>/dev/null || echo "/Library/Java/JavaVirtualMachines/microsoft-11.jdk/Contents/Home")
+   JAVA_HOME="$JAVA11" ./gradlew test 2>&1 | tail -40
+   ```
+
 5. Report:
    - Which test files were created or updated.
    - Test run results (passed / failed / skipped).
