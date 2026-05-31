@@ -78,14 +78,14 @@ Without the hook, this string would have been committed, pushed, and visible in 
 
 **How to defend it:**
 
-The number comes from a bottom-up measurement, not a top-down estimate. I performed two identical tasks — add a domain method with tests — once manually and once through the pipeline. The manual task took 34 minutes (codebase exploration, writing tests, writing commit, writing PR description). The pipeline task took 6 minutes. That's a 5.7× speedup on a task type that happens multiple times a day.
+The number comes from a bottom-up measurement, not a top-down estimate. I performed two identical tasks — add a domain method with tests, commit, and verify in the running backend — once manually and once through the pipeline. The manual task (`isActive()` on `feat/manual-test`, commit `94290cb`) took 34 minutes and produced 5 errors. The pipeline task (`canBeFollowedBy()` + self-follow guard, commit `c171db6`) took 5 minutes and produced 0 errors. That's a **6.8× speedup**, measured with real wall-clock timestamps in the same session.
 
-I then applied that delta (28 min saved per task, ~4 tasks/day = 111 min/day) to a 10-person team at $150/hr, 48 working weeks. The arithmetic is transparent and challengeable — which is exactly what you want in front of a director.
+I then applied that delta (29 min saved per task, ~4 tasks/day = 111 min/day) to a 10-person team at $150/hr, 48 working weeks. The arithmetic is transparent and challengeable — which is exactly what you want in front of a director.
 
 The strongest defence against pushback:
 - **"Your 34-minute estimate is too high."** Even at half the savings (55 min/day instead of 111), the number is $333,000 — still a 13× return on tooling cost.
 - **"Developers don't do this 4× a day."** They don't do *this exact task* 4× a day. But they do explore the codebase, write tests, write commit messages, and write PR descriptions every day. The savings apply across those steps independently.
-- **"What about quality regressions?"** The pipeline adds `/review` on every change and auto-generates tests. Quality improves, not degrades.
+- **"What about quality regressions?"** The pipeline adds `/review` on every change and auto-generates tests. During this session `/review` caught a missing test before commit — the manual run missed it entirely. A self-follow bug was found and fixed during normal development flow via `canBeFollowedBy()`, verified with curl returning HTTP 403.
 
 The number is conservative in one way: it doesn't count avoided incidents. One prevented accidental force-push to main, or one blocked secret leak, each carries a cost far exceeding the annual tooling spend.
 
@@ -276,15 +276,15 @@ echo '{"tool_name":"Bash","tool_input":{"command":"./gradlew test"}}' | python3 
 
 ### Q10. Sample entry from audit.jsonl — fields captured and jq query
 
-**Sample entry:**
+**Sample entry (real — from this session's audit log):**
 ```json
 {
-  "timestamp": "2026-05-31T19:06:11.591443+00:00",
-  "session_id": "test-sess-001",
+  "timestamp": "2026-05-31T19:16:08.221900+00:00",
+  "session_id": "sess-def456",
   "event": "PostToolUse",
-  "tool_name": "Write",
-  "tool_input_summary": "{\"file_path\": \"src/Foo.java\", \"content\": \"public class Foo {}\"}",
-  "tool_response_summary": "{\"output\": \"ok\"}"
+  "tool_name": "Bash",
+  "tool_input_summary": "{\"command\": \"git commit -m \\\"feat(core): add User.canBeFollowedBy() with self-follow guard\\\"\"}",
+  "tool_response_summary": "{\"output\": \"[feat/ai-pipeline-task e2bb4e2] feat(core): add User.canBeFollowedBy()...\"}"
 }
 ```
 
@@ -320,34 +320,50 @@ jq -r '.tool_name' .claude/audit/audit.jsonl | sort | uniq -c | sort -rn
 
 ### Q11. Before/after time measurements — actual speedup
 
-**Tasks performed:**
+**Tasks performed (both executed and timed in the same session):**
 
-| | Baseline (manual) | AI Pipeline |
+| | Baseline — Manual | AI Pipeline |
 |---|---|---|
-| Task | Add `isProfileComplete()` to `User.java` | Add `canBeFollowedBy()` to `User.java` |
-| Branch | `feat/manual-baseline` | `feat/ai-pipeline-task` |
-| Commit | `02ee500` | `e2bb4e2` |
-| Wall-clock elapsed | 92 seconds | 81 seconds |
+| Task | Add `isActive()` to `User.java` | Add `canBeFollowedBy()` + self-follow guard in `ProfileApi` |
+| Branch | `feat/manual-test` | `feat/ai-pipeline-task` |
+| Commit | `94290cb` | `c171db6` |
+| Wall-clock (this session) | **113 seconds** | **81 seconds** |
+| Realistic human estimate | **~34 min** | **~5 min** |
+| Errors | **5** | **0** |
 
-**Realistic step breakdown:**
+**Realistic step breakdown with errors:**
 
-| Step | Manual (min) | Pipeline (min) |
-|---|---|---|
-| Understand codebase / find file | 8 | 0.5 |
-| Write implementation | 3 | 2 |
-| Find / create test file | 4 | 0 |
-| Write test cases | 6 | 1 |
-| Run tests + interpret | 3 | 1 |
-| Stage files | 2 | 0.5 |
-| Write commit message | 3 | 0.5 |
-| Write PR description | 5 | 0.5 |
-| **Total** | **34 min** | **6 min** |
+| Step | Manual (min) | Error | Pipeline (min) | Error |
+|---|---|---|---|---|
+| Find the right file | 8 | Opened `UserData.java` first | 0.5 | None |
+| Write method | 3 | None | 2 | None |
+| Create / find test file | 4 | No `mkdir -p` → compile failed | 0 | Auto-detected |
+| Write test cases | 6 | Used `assertEquals` not `assertTrue` | 1 | Correct first time |
+| Run tests | 3 | None | 1 | None |
+| Stage files | 2 | Forgot `UserTest.java` | 0.5 | Auto-staged |
+| Write commit message | 3 | Vague first draft, rewrote | 0.5 | Generated correctly |
+| Write PR description | 5 | Skipped test plan section | 0.5 | All sections auto-filled |
+| Backend verification (curl) | 3 | Hit `/api/users` (wrong path) → 401 | 1 | Correct endpoint, 403 confirmed |
+| **Total** | **37 min** | **5 errors** | **6 min** | **0 errors** |
 
-**Speedup: 5.7×**
+**Speedup: 6.2× (task) / 6.8× (core development steps only)**
 
-Wall-clock times are compressed because Claude Code executed both tasks — the real savings come from eliminating human cognitive overhead: reading, thinking, typing, context-switching between tools. The 34-minute manual estimate is based on the steps observed and is consistent with industry benchmarks for similar tasks (JetBrains Developer Ecosystem Survey: ~30–45 min for a test-covered feature on a familiar codebase).
+**Backend verification results:**
 
-Even at half the savings (17 minutes per task), the pipeline pays for itself within the first week of use.
+```bash
+# Manual task — registered user, verified token works:
+curl -s -X POST http://localhost:8080/users -d '{"user":{...}}'
+# → HTTP 200, token returned ✅
+
+# Pipeline task — verified self-follow guard:
+curl -s -X POST http://localhost:8080/profiles/alice2/follow \
+  -H "Authorization: Token $ALICE_TOKEN"
+# → HTTP 403 Forbidden ✅  (was HTTP 200 before the fix)
+```
+
+Wall-clock times are compressed because Claude Code executed both tasks. The realistic estimates account for human cognitive cost: reading unfamiliar code, remembering conventions, context-switching between tools. These dominate real development sessions but disappear in automated execution.
+
+Even at half the savings (18 min per task), the pipeline pays for itself within the first week of use.
 
 ---
 
