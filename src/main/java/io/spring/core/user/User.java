@@ -34,6 +34,10 @@ public class User {
     return userId != null && !userId.equals(this.id);
   }
 
+  public boolean isActive() {
+    return email != null && !email.isBlank();
+  }
+
   public void update(String email, String username, String password, String bio, String image) {
     if (!Util.isEmpty(email)) {
       this.email = email;
