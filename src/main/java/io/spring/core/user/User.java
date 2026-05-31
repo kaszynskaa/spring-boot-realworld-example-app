@@ -30,6 +30,10 @@ public class User {
     return image != null && !image.isBlank();
   }
 
+  public boolean isProfileComplete() {
+    return bio != null && !bio.isBlank() && hasImage();
+  }
+
   public void update(String email, String username, String password, String bio, String image) {
     if (!Util.isEmpty(email)) {
       this.email = email;
