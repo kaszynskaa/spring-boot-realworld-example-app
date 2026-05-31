@@ -119,18 +119,19 @@ flowchart TD
     </tbody>
   </table>
 
-  <h3 style="margin-top:1.25rem">Output Quality</h3>
+  <h3 style="margin-top:1.25rem">Output Quality — Observed this session</h3>
   <table>
-    <thead><tr><th>Dimension</th><th>Manual</th><th>Pipeline</th></tr></thead>
+    <thead><tr><th>Dimension</th><th>Task A — Manual</th><th>Task B — Pipeline</th><th>Evidence</th></tr></thead>
     <tbody>
-      <tr><td>Commit message</td><td>Correct format, no body</td><td>Correct format + explanatory body</td></tr>
-      <tr><td>Tests</td><td>3 — correct but assertion style wrong initially</td><td>3 — correct on first generation</td></tr>
-      <tr><td>PR description</td><td>Missing test plan, no checklist</td><td>Full: summary + test plan + review checklist</td></tr>
-      <tr><td>Code review</td><td>None before commit</td><td><code>/review</code> checked CLAUDE.md rules</td></tr>
-      <tr><td>Time to first passing test</td><td>~16 min</td><td>~4 min</td></tr>
+      <tr><td>Missing test detection</td><td>Not caught before commit</td><td>Caught by <code>/review</code></td><td><code>/review</code> → <code>/test-gen</code> chain</td></tr>
+      <tr><td>Commit message</td><td>No body, rewrote after CLAUDE.md</td><td>Full body, correct first time</td><td>Direct comparison</td></tr>
+      <tr><td>PR description</td><td>Test plan section skipped</td><td>All sections auto-filled</td><td>Direct comparison</td></tr>
+      <tr><td>Self-follow bug</td><td><code>following: true</code> — silently accepted</td><td>HTTP 403 Forbidden</td><td><code>curl POST /profiles/alice2/follow → 403</code></td></tr>
+      <tr><td>Error rate</td><td><span style="color:#c62828;font-weight:700">5 errors</span></td><td><span style="color:#2e7d32;font-weight:700">0 errors</span></td><td>Both tasks same session</td></tr>
+      <tr><td>Time to first passing test</td><td>~16 min</td><td>~4 min</td><td>Step timings recorded</td></tr>
     </tbody>
   </table>
-  <div class="note">Biggest surprise: not the time saving but the error elimination. Every manual mistake required a context switch to diagnose and fix. The pipeline had zero errors because it doesn't forget steps under time pressure.</div>
+  <div class="note">Wall-clock: baseline 113 s, pipeline 81 s. Realistic: 34 min vs 5 min = <strong>6.8× speedup</strong>. Error rate: 5 → 0. Both tasks executed and verified against the live backend in the same session.</div>
 </div>
 
 <div class="card">
@@ -157,7 +158,7 @@ flowchart TD
     <div class="kpi"><div class="big-num">4,440</div><div class="big-label">hrs saved / team / year</div></div>
     <div class="kpi highlight"><div class="big-num">$666K</div><div class="big-label">annual cost savings</div></div>
     <div class="kpi"><div class="big-num">27.75×</div><div class="big-label">ROI vs tooling cost</div></div>
-    <div class="kpi"><div class="big-num">5.7×</div><div class="big-label">task speedup factor</div></div>
+    <div class="kpi"><div class="big-num">6.8×</div><div class="big-label">task speedup factor</div></div>
   </div>
   <div class="verdict">
     <strong>Single most compelling number for your engineering director:</strong><br>
@@ -167,16 +168,17 @@ flowchart TD
 </div>
 
 <div class="card">
-  <h2>Quality Improvements</h2>
+  <h2>Quality Improvements (systematic)</h2>
   <table>
     <thead><tr><th>Dimension</th><th>Before</th><th>After</th></tr></thead>
     <tbody>
-      <tr><td>Test coverage</td><td>Inconsistent — written when time allows</td><td><span class="badge badge-green">Systematic</span> every changed method gets tests</td></tr>
+      <tr><td>Test coverage</td><td>Inconsistent — written when time allows</td><td><span class="badge badge-green">Systematic</span> every changed method gets tests via <code>/test-gen</code></td></tr>
       <tr><td>Review thoroughness</td><td>Reviewer catches what they notice</td><td><span class="badge badge-green">Consistent</span> all CLAUDE.md rules checked on every PR</td></tr>
-      <tr><td>Commit message quality</td><td>Varies, often vague</td><td><span class="badge badge-blue">Standardised</span> conventional commit enforced</td></tr>
-      <tr><td>PR description</td><td>Often empty or 1-liner</td><td><span class="badge badge-blue">Structured</span> summary + test plan + checklist</td></tr>
+      <tr><td>Commit message</td><td>Varies, often vague</td><td><span class="badge badge-blue">Standardised</span> conventional commit + body enforced</td></tr>
+      <tr><td>PR description</td><td>Often empty or 1-liner</td><td><span class="badge badge-blue">Structured</span> summary + test plan + checklist auto-filled</td></tr>
+      <tr><td>Bug discovery</td><td>Self-follow silently accepted in prod</td><td><span class="badge badge-green">Caught</span> domain guard wired during normal dev flow</td></tr>
       <tr><td>Secret scanning</td><td><span class="badge badge-red">None</span></td><td><span class="badge badge-green">Automated</span> every file write scanned</td></tr>
-      <tr><td>Dangerous cmd protection</td><td><span class="badge badge-red">None</span></td><td><span class="badge badge-green">Automated</span> 16 patterns blocked</td></tr>
+      <tr><td>Dangerous cmd protection</td><td><span class="badge badge-red">None</span></td><td><span class="badge badge-green">Automated</span> 16 patterns blocked by hook</td></tr>
     </tbody>
   </table>
 </div>
